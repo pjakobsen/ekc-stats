@@ -17,10 +17,17 @@ library(dplyr)
 
 str(wb_cachelist, max.level = 1)
 
-# Population growth (annual %)
-co2_data = wb(country = "countries_only", indicator = "EN.ATM.CO2E.PP.GD.KD", startdate = 2005, enddate = 2016)
+# Search for relevant indicators
+emissions_vars <- wbsearch("Emissions")
 
-lands = c()
+countries = c("DNK","SWE","FIN")
+
+# Population growth (annual %)
+co2_data_wide = wb(country = countries, 
+                   indicator = c("EN.ATM.CO2E.PP.GD.KD","EN.ATM.NOXE.PC"), 
+                   startdate = 1990, enddate = 2018,return_wide = TRUE)
+
+
 
 ## dplyr::summarize() or summarise() adds new column when grouping
 co2_data  %>%
@@ -40,5 +47,14 @@ pop_gdp_long <- wb(country = c("US", "NO"), indicator = c("SP.POP.GROW", "NY.GDP
                    startdate = 1971, enddate = 1971)
 
 head(pop_gdp_long)
-pop_data <- wb(indicator = "SP.POP.GROW", startdate = 2005, enddate = 2016)
 
+
+pop_gdp_wide <- wb(country = c("US", "NO"), indicator = c("SP.POP.GROW", "NY.GDP.MKTP.CD"),
+                   startdate = 1971, enddate = 1971, return_wide = TRUE)
+
+head(pop_gdp_wide)
+
+pop_gdp_wide <- wb(country = c("US", "NO"), indicator = c("SP.POP.GROW", "NY.GDP.MKTP.CD"),
+                   startdate = 1971, enddate = 1971, return_wide = TRUE)
+
+head(pop_gdp_wide)
