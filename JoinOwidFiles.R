@@ -8,12 +8,14 @@ str(co2)
 library(dplyr)
 colnames(co2)
 
-co2 <- co2 %>% rename(CO2Tonnes = names(.)[4] ,
-                      GPPPC2011 = names(.)[5],
+co2 <- co2 %>% rename(CO2TonnesPC = names(.)[4] ,
+                      GDPPC2011 = names(.)[5],
                       Population=names(.)[6])
 
 colnames(co2)
 wind=read.csv("data/Europe-installed-wind-capacity-Gigawatts.csv")
+wind <- wind %>% rename(WindCapacityGigawatts = names(.)[4])
+colnames(wind)
 head(wind)
 str(wind)
 
@@ -23,8 +25,8 @@ country_codes =c("DNK","SWE","NOR","FIN","DEU","GBR","ESP","POL","NLD","FRA")
 co2_wrangled = co2 %>%
   filter(Code %in% country_codes) %>%
   filter(Year %in% (1997:2019) ) %>%
-  filter(!is.na(CO2Tonnes)) %>%
-  filter(!is.na(GPPPC2011)) 
+  filter(!is.na(CO2TonnesPC)) %>%
+  filter(!is.na(GDPPC2011)) 
 
 
 
@@ -36,7 +38,7 @@ wind_wrangled = wind %>%
 
 
 # Attempt Merge
-mydata <- merge(co2_wrangled, wind_wrangled, by=c("Entity","Year"), all=TRUE)
+mydata <- merge(co2_wrangled, wind_wrangled, by=c("Entity","Year","Code"), all=TRUE)
 
 
 write.csv(mydata, file="data_output/co2wind_europe_subset.csv",
