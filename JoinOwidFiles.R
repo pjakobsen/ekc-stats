@@ -19,6 +19,23 @@ colnames(wind)
 head(wind)
 str(wind)
 
+# Eurostat Data goes back to 1990
+wind1990=read.csv("data/nrg_inf_epcrw_1_Data.csv")
+
+head(wind1990)
+
+
+country_names =c("Denmark","Sweden","Norway","Finland","Germany (until 1990 former territory of the FRG)","United Kingdom","Spain","Poland","Nederlands","France")
+
+
+
+wind1990 %>%
+  select(-SIEC,-PLANT_TEC) %>%
+  filter(GEO %in% country_names)  %>%
+  filter(!is.na(Value))  %>%
+  filter(Value!=":") %>%
+  mutate(GEO = replace(GEO, GEO == "Germany (until 1990 former territory of the FRG)", "Germany"))
+
 
 country_codes =c("DNK","SWE","NOR","FIN","DEU","GBR","ESP","POL","NLD","FRA")
 
@@ -26,8 +43,7 @@ co2_wrangled = co2 %>%
   filter(Code %in% country_codes) %>%
   filter(Year %in% (1997:2019) ) %>%
   filter(!is.na(CO2TonnesPC)) %>%
-  filter(!is.na(GDPPC2011)) 
-
+  filter(!is.na(GDPPC2011)) %>%
 
 
 wind_wrangled = wind %>%
