@@ -39,9 +39,9 @@ wind1990$GEO[wind1990$GEO=="Germany (until 1990 former territory of the FRG)"] =
 wind1990_wrangled = wind1990 %>%
   select(-SIEC,-PLANT_TEC) %>%
   filter(GEO %in% country_names)  %>%
-  %>%
-  filter(Value!=":")  %>%
-  mutate(GEO = recode(GEO, 
+  %>% filter(Value!=":")  %>%
+  mutate(Code = recode(GEO, 
+                       
                     "Denmark"="DNK",
                     "Sweden"="SWE",
                     "Norway"="NOR",
