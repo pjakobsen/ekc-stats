@@ -63,7 +63,7 @@ wind1990_wrangled <- wind1990_wrangled %>% arrange(Year, desc(Entity))
   
 wind_wrangled = wind %>%
   filter(Code %in% country_codes) %>%
-  filter(Year %in% (1997:2016) )
+  filter(Year %in% (1990:2016) )
 
 head(co2_wrangled,30)
 head(wind1990_wrangled,30)
