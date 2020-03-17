@@ -1,4 +1,4 @@
-
+install.packages('sf')
 install.packages("eurostat")
 library("eurostat")
 
