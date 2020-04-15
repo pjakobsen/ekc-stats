@@ -1,0 +1,15 @@
+---
+ var:'ENVTR'
+ id: 't2020_rt320'
+ name: 'Environmental tax revenues'
+ desription: '% of total revenues from taxes and social contributions'
+ availability: 
+ tags:
+   - tax
+   - government
+---
+ var:'GGE'
+ id: 'sdg_13_10'
+ name: 'Environmental tax revenues'
+ desription: '% of total revenues from taxes and social contributions'
+ 
