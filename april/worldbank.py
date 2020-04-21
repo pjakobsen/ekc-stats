@@ -11,7 +11,11 @@ AT THE WORLD BANK UK = GB
 
 rich_countries_json = wbdata.get_country(incomelevel="HIC")
 
-country_tuple=("AT","BE","DE","DK","ES","FI","FR","IE","IS","IT","NL","NO","PL","PT","SE","TR","GB")
+
+# Selected by countries who have environmental tax data
+# Or country names are different
+country_tuple=("AT","BE","DE","DK","ES","FI","FR","IE","IS","IT","NL","NO","PL","PT","SE","GB")
+euro_country_tuple=("AT","BE","DE","DK","ES","FI","FR","IE","IS","IT","NL","NO","PL","PT","SE","UK")
 
 
 #CO2 emissions (metric tons per capita) EN.ATM.CO2E.PC
@@ -51,9 +55,11 @@ df.index.names = ['country','year']
 code = "sdg_17_50" #Share of environmental taxes in total tax revenues
 tdf = eurostat.get_data_df(code, flags=False)
 tdf = tdf.rename(columns={ tdf.columns[0]: "country_code" })
-tdf= tdf[tdf['country_code'].isin(list(country_tuple))]
+tdf= tdf[tdf['country_code'].isin(list(euro_country_tuple))]
 del tdf[2018]
 iso2_codes =tdf['country_code'].tolist()
+# Change back to standard - scary!!
+iso2_codes[15]='GB'
 del tdf['country_code']
 tdf['country']=coco.convert(names=iso2_codes, to='name_short', not_found=None)
 
