@@ -4,3 +4,11 @@ The relevant files here for exploration in Stata are
 * ekc-setup.do - the set up of data in Stata
 * ekc-explore.do - discovery using graphs etc. 
 * ekc-model.do - finally, the model, the tests hopefully leading to conlusion about h0 and h1
+
+
+Instructions:  
+Download dta file.  
+Run ekc-setup.do.  
+Run ekc-explore.do.   
+
+ekc-model.do not ready yet. 
