@@ -25,6 +25,7 @@ euro_country_tuple=("AT","BE","DE","DK","ES","FI","FR","IE","IS","IT","NL","NO",
 #Underscores make datanames complient with Stata
 
 indicators = {"NY.GDP.PCAP.KD": "GDP.PCAP",#GDP per capita (constant 2010 US$)
+              "NY.GDP.PCAP.PP.KD":"GDP.PCAP.PP", #GDP per capita, PPP (constant 2011 international $)
               "NY.GDP.PCAP.KD.ZG": "GDP.PCAP.GRO", #GDP per capita growth (annual %)
               "GB.XPD.RSDV.GD.ZS": "RD",  #Research and development expenditure (% of GDP)
               "EG.USE.COMM.FO.ZS": "FossilFuel",  # Fossil Fuel Energy Consumption (% of Total)
@@ -36,6 +37,7 @@ indicators = {"NY.GDP.PCAP.KD": "GDP.PCAP",#GDP per capita (constant 2010 US$)
               "EG.FEC.RNEW.ZS":"Renewables", #Renewable energy consumption (% of total final energy consumption)
               "EG.ELC.RNWX.ZS":"RenewablesLessHydro", #Electricity production from renewable sources, excluding hydroelectric (% of total)"
               "EN.ATM.GHGT.KT.CE":"Greenhouse", #Total greenhouse gas emissions (kt of CO2 equivalent)
+              "SP.POP.TOTL":"Population"
               }
 import datetime
 data_dates=(datetime.datetime(2000, 1, 1), datetime.datetime(2017, 1, 1))
@@ -45,7 +47,7 @@ df = wbdata.get_dataframe(indicators,
                             data_date=data_dates, 
                             convert_date=False, keep_levels=True)
 
-
+df.Population = df.Population.astype(int)
 df.index.names = ['country','year']
 
 #conda install -c konstantinstadler country_converter

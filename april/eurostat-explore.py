@@ -8,7 +8,7 @@ import seaborn as sns
 import wbdata
 countries=("AT","BE","BG","CH","CY","CZ","DE", "DK","ES","FI","FR","HR","HU","IE","IS","IT","LI","LT","LU","LV","MT","NL","NO","PL","PT","RO","SE","SI","SK","TR","UK")
 countries=("AT","BE","BG","CY","CZ","DE", "DK","ES","FI","FR","HU","IE","IS","IT","LT","LU","LV","MT","NL","NO","PL","PT","SE","SI","SK","UK")
-
+countries=("AT","BE","DE","DK","ES","FI","FR","IE","IS","IT","NL","NO","PL","PT","SE","TR","GB")
 
 code = "sdg_17_50" #Share of environmental taxes in total tax revenues
 #code = "urb_cenv"
@@ -73,7 +73,7 @@ def fetch_tax():
             var_name="year", 
             value_name="env_tax")
     df.sort_values(by=['country','year'],inplace = True)
-    return df[df['year']>=1990]  
+    return df.query('year > 1999').query('year<2018')
 
 
 ghg_pc_df = fetch_ghg_pc()
@@ -88,7 +88,7 @@ del gdp_df['unit_x']
 del gdp_df['unit_y']
 
 tax_env_share_df= fetch_tax()
-
+tax_env_share_df.to_csv('data/eurostat-environmental-tax.csv', index=False)
 # now we can merge datasets for use in Stata
 new_df = pd.merge(ghg_pc_df, tax_env_share_df,  how='left', left_on=['year','country'], right_on = ['year','country'])
 
