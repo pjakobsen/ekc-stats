@@ -46,7 +46,6 @@ cmissing(n n) ysc(log) ms(+ O) msize(*1.2)  yla(, ang(h)) xtitle("")
 
 ********** Step 2: Interpolation of missing values *******
 //TODO: Experiment with varios interpolation libraries mipolate etc 
-
 ipolate  FossilFuel year, by(country) gen(iFossilFuel) epolate
 ipolate  Greenhouse  year, by(country) gen(iGreenhouse) epolate
 ipolate  Government   year, by(country) gen(iGovernment) epolate
