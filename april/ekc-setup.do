@@ -8,7 +8,14 @@ use "wb.dta",clear
 //set more off
 
 // Create data labels. This code also acts as documentation for reader of .do file :) 
+
+***. Round and replace 
+replace FossilFuel = round(FossilFuel, 0.1)
+replace RD = round(RD, 0.1)
+replace Government = round(FossilFuel, 0.1)
+
 ***** World Bank *******
+label variable Greenhouse "Greenhouse Gas Emissions pr. Capita"
 label variable GDP_PCAP "GDP per capita (constant 2010 US$)"
 label variable GDP_PCAP_PP "GDP per capita, PPP (constant 2011 international $)"
 label variable GDP_PCAP_GRO "GDP per capita growth (annual %)"
@@ -23,9 +30,9 @@ label variable Renewables "Renewable energy consumption (% of total final energy
 label variable RenewablesLessHydro "Electricity production from renewable sources, excluding hydroelectric (% of total)"
 label variable Greenhouse "Total greenhouse gas emissions (kt of CO2 equivalent)"
 label variable Population "Polation, required for GHG per capity emmissions"
-replace Greenhouse = (Greenhouse*1000)/Population
-label variable Greenhouse "Greenhouse Gas Emissions pr. Capita"
 
+
+gen Greenhouse_PCAP = (Greenhouse*1000)/Population
 ***** Eurostat *******
 label variable env_tax "% Share of environmental taxes in total tax revenues"
 
@@ -37,7 +44,7 @@ destring year, replace
 egen country_id = group(country)
 
 // Move some columns 
-order country_id country year
+order country_id country year Greenhouse_PCAP GDP_PCAP_PP GDP_PCAP_GRO FossilFuel Renewables RenewablesLessHydro
 
 ********** Step 2: Interpolation of missing values *******
 //TODO: Experiment with varios interpolation libraries mipolate etc 
@@ -61,10 +68,14 @@ ipolate  RD year, by(country) gen(iRD) epolate
 **************** Step 3: Generate variables for model 
 // Log and Mipolate every relevant variable 
 
-gen logGreenhouse = log(Greenhouse)
-mipolate logGreenhouse year, gen(iLogGreenhouse) pchip
+gen logGreenhouse_PCAP = log(Greenhouse_PCAP)
+mipolate logGreenhouse_PCAP year, gen(iLogGreenhouse_PCAP) pchip
+gen logFossilFuel = log(FossilFuel)
+mipolate logFossilFuel year, gen(logFossilFuel) pchip
+
 
 gen logGDP_PCAP_PP  = log(GDP_PCAP_PP) //No need interpolate, full 288 obs
 
 
 
+save "/Users/greendoor/Documents/GitHub/ekc-stats/april/wb2.dta", replace

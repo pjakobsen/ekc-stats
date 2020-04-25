@@ -22,7 +22,8 @@ xtset $id $t
 xtdescribe 
 xtsum $id $t $ylist $xlist
 
-
+xtline GDP_PCAP_GRO,  legend(off) overlay title("GDP per Capita Annual Growth Rate") subtitle("$US 2011 Purchasing Power Parity")
+xtline Greenhouse if year < 2018,  legend(off) overlay ytitle("Greenhouse Gas Emissions") 
 * Pooled OLS estimator
 reg $ylist $xlist
 

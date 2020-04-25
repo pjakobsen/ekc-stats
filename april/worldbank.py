@@ -24,21 +24,22 @@ euro_country_tuple=("AT","BE","DE","DK","ES","FI","FR","IE","IS","IT","NL","NO",
 
 #Underscores make datanames complient with Stata
 
-indicators = {"NY.GDP.PCAP.KD": "GDP.PCAP",#GDP per capita (constant 2010 US$)
-              "NY.GDP.PCAP.PP.KD":"GDP.PCAP.PP", #GDP per capita, PPP (constant 2011 international $)
-              "NY.GDP.PCAP.KD.ZG": "GDP.PCAP.GRO", #GDP per capita growth (annual %)
-              "GB.XPD.RSDV.GD.ZS": "RD",  #Research and development expenditure (% of GDP)
-              "EG.USE.COMM.FO.ZS": "FossilFuel",  # Fossil Fuel Energy Consumption (% of Total)
-              "NV.IND.TOTL.ZS": "IndustryValueAdded", # Industry (including construction), value added (% of GDP)
-              "EN.ATM.CO2E.PC":"CO2E.PC", #CO2 emissions (metric tons per capita) 
-              "NE.CON.GOVT.ZS": "Government", #General government final consumption expenditure (% of GDP)
-              "NE.EXP.GNFS.ZS": "Exports", #Exports of goods and services (% of GDP)
-              "NE.IMP.GNFS.ZS": "Imports", #Imports of goods and services (% of GDP)
-              "EG.FEC.RNEW.ZS":"Renewables", #Renewable energy consumption (% of total final energy consumption)
-              "EG.ELC.RNWX.ZS":"RenewablesLessHydro", #Electricity production from renewable sources, excluding hydroelectric (% of total)"
-              "EN.ATM.GHGT.KT.CE":"Greenhouse", #Total greenhouse gas emissions (kt of CO2 equivalent)
-              "SP.POP.TOTL":"Population"
-              }
+indicators = {
+    "EN.ATM.GHGT.KT.CE":"Greenhouse", #Total greenhouse gas emissions (kt of CO2 equivalent)  
+    "NY.GDP.PCAP.KD": "GDP.PCAP",#GDP per capita (constant 2010 US$)
+    "NY.GDP.PCAP.PP.KD":"GDP.PCAP.PP", #GDP per capita, PPP (constant 2011 international $)
+    "NY.GDP.PCAP.KD.ZG": "GDP.PCAP.GRO", #GDP per capita growth (annual %)
+    "GB.XPD.RSDV.GD.ZS": "RD",  #Research and development expenditure (% of GDP)
+    "EG.USE.COMM.FO.ZS": "FossilFuel",  # Fossil Fuel Energy Consumption (% of Total)
+    "NV.IND.TOTL.ZS": "IndustryValueAdded", # Industry (including construction), value added (% of GDP)
+    "EN.ATM.CO2E.PC":"CO2E.PC", #CO2 emissions (metric tons per capita) 
+    "NE.CON.GOVT.ZS": "Government", #General government final consumption expenditure (% of GDP)
+    "NE.EXP.GNFS.ZS": "Exports", #Exports of goods and services (% of GDP)
+    "NE.IMP.GNFS.ZS": "Imports", #Imports of goods and services (% of GDP)
+    "EG.FEC.RNEW.ZS":"Renewables", #Renewable energy consumption (% of total final energy consumption)
+    "EG.ELC.RNWX.ZS":"RenewablesLessHydro", #Electricity production from renewable sources, excluding hydroelectric (% of total)"
+    "SP.POP.TOTL":"Population"
+}
 import datetime
 data_dates=(datetime.datetime(2000, 1, 1), datetime.datetime(2017, 1, 1))
 #Create dataframe
@@ -78,5 +79,21 @@ df=df.reset_index()
 df['year'] = df['year'].astype(int)
 df = df.set_index(['country','year'])
 df2 = pd.merge(df, tax,  how='left', left_on=['country', 'year'], right_on = ['country','year'])
-
+df2 = df2.round(2)
+'''
+Python
+# Apply function numpy.square() to square the value 2 column only i.e. with column names 'x' and 'y' only
+modDfObj = dfObj.apply(lambda x: np.square(x) if x.name in ['x', 'y'] else x)
+print("Modified Dataframe : Squared the values in column x & y :", modDfObj, sep='\n')
+1
+2
+3
+4
+# Apply function numpy.square() to square the value 2 column only i.e. with column names 'x' and 'y' only
+modDfObj = dfObj.apply(lambda x: np.square(x) if x.name in ['x', 'y'] else x)
+ 
+print("Modified Dataframe : Squared the values in column x & y :", modDfObj, sep='\n')
+df.round({'Y': 2, 'X': 2})
+'''
 df2.to_stata('data/wb.dta')
+df2.to_csv('data/wb.csv')
