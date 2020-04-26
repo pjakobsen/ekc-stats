@@ -97,3 +97,9 @@ df.round({'Y': 2, 'X': 2})
 '''
 df2.to_stata('data/wb.dta')
 df2.to_csv('data/wb.csv')
+
+import pysftp
+
+with pysftp.Connection('hostname', username='me', password='secret') as sftp:
+    with sftp.cd('public'):             # temporarily chdir to public
+        sftp.put('/my/local/filename')
