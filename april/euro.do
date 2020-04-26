@@ -1,3 +1,4 @@
+cd "/Users/greendoor/Documents/GitHub/ekc-stats/april/"
 
 /*
 
@@ -13,8 +14,10 @@ CRF1A1B	 Fuel combustion in petroleum refining
 */
 
 clear
-eurostatuse env_air_gge, noflags start(1990) nolabel long keepdim(GHG ; CRF1 CRF2 ; THS_T) geo(AT BE DE ES FR FI IS NL NO PL SE UK)
-save "/Users/greendoor/Documents/GitHub/ekc-stats/april/env_air_gge.dta", replace
+eurostatuse env_air_gge, noflags start(1995) end(2017) nolabel long keepdim(GHG ; CRF1 CRF2 ; THS_T) geo(AT BE DE ES FR FI IS NL NO PL SE UK)
+keep if strpos(src_crf, "CRF1")
+
+save "env_air_gge.dta", replace
 
 /*
 CLV_I10_HAB	Chain linked volumes, Index 2010=100, per capita
@@ -32,5 +35,12 @@ P41	Actual individual consumption
 
 */
 clear
-eurostatuse nama_10_pc, noflags start(1990) nolabel long keepdim(B1GQ P31_S14_S15  ; CLV10_EUR_HAB) geo(AT BE DE ES FR FI IS NL NO PL SE UK)
-save "/Users/greendoor/Documents/GitHub/ekc-stats/april/nama_10_pc.dta", replace
+eurostatuse nama_10_pc, noflags start(1995) end(2017) nolabel long keepdim(B1GQ P31_S14_S15  ; CLV10_EUR_HAB) geo(AT BE DE ES FR FI IS NL NO PL SE UK)
+
+keep if strpos(na_item, "B1GQ")
+save "nama_10_pc.dta", replace
+
+
+/******** Merge ********/
+use "env_air_gge.dta" 
+merge 1:1 geo time using "nama_10_pc.dta"
