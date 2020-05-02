@@ -14,7 +14,7 @@ CRF1A1B	 Fuel combustion in petroleum refining
 */
 
 clear
-eurostatuse env_air_gge, noflags start(1995) end(2017) nolabel long keepdim(GHG ; CRF1 CRF2 ; THS_T) geo(AT BE DE ES FR FI IS NL NO PL SE UK)
+eurostatuse env_air_gge, noflags start(1995) end(2017) nolabel long keepdim(GHG ; CRF1 CRF2 ; THS_T) geo(AT BE DE DK ES FR FI IE IS IT NL NO PL PT SE UK)
 keep if strpos(src_crf, "CRF1")
 
 save "env_air_gge.dta", replace
@@ -35,7 +35,7 @@ P41	Actual individual consumption
 
 */
 clear
-eurostatuse nama_10_pc, noflags start(1995) end(2017) nolabel long keepdim(B1GQ P31_S14_S15  ; CLV10_EUR_HAB) geo(AT BE DE ES FR FI IS NL NO PL SE UK)
+eurostatuse nama_10_pc, noflags start(1995) end(2017) nolabel long keepdim(B1GQ P31_S14_S15  ; CLV10_EUR_HAB) geo(AT BE DE DK ES FR FI IE IS IT NL NO PL PT SE UK)
 
 keep if strpos(na_item, "B1GQ")
 save "nama_10_pc.dta", replace
@@ -44,3 +44,51 @@ save "nama_10_pc.dta", replace
 /******** Merge ********/
 use "env_air_gge.dta" 
 merge 1:1 geo time using "nama_10_pc.dta"
+
+drop unit airpol src na_item _merge
+
+save "final.dta", replace
+
+/*
+
+  EU Member States
+   BE    Belgium
+   BG    Bulgaria
+   CZ    Czech Republic
+   DK    Denmark
+   DE    Germany
+   EE    Estonia
+   IE    Ireland
+   EL    Greece
+   ES    Spain
+   FR    France
+   HR    Croatia
+   IT    Italy
+   CY    Cyprus
+   LV    Latvia
+   LT    Lithuania
+   LU    Luxembourg
+   HU    Hungary
+   MT    Malta
+   NL    Netherlands
+   AT    Austria
+   PL    Poland
+   PT    Portugal
+   RO    Romania
+   SI    Slovenia
+   SK    Slovakia
+   FI    Finland
+   SE    Sweden
+   UK    United Kingdom
+
+   Other countries
+   IS    Iceland
+   LI    Liechtenstein
+   NO    Norway
+   CH    Switzerland
+   ME    Montenegro
+   TR    Turkey
+   US    United States
+
+
+*/

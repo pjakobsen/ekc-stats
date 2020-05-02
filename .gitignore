@@ -146,3 +146,6 @@ dmypy.json
 .pyre/
 
 # End of https://www.gitignore.io/api/python
+*.dta
+*.dta
+may/~$Myfile.doc

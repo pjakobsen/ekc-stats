@@ -41,10 +41,10 @@ indicators = {
     "SP.POP.TOTL":"Population"
 }
 import datetime
-data_dates=(datetime.datetime(2000, 1, 1), datetime.datetime(2017, 1, 1))
+data_dates=(datetime.datetime(1960, 1, 1), datetime.datetime(2017, 1, 1))
 #Create dataframe
 df = wbdata.get_dataframe(indicators, 
-                            country=country_tuple, 
+                            #country=country_tuple, 
                             data_date=data_dates, 
                             convert_date=False, keep_levels=True)
 
