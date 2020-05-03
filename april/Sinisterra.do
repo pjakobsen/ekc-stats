@@ -8,7 +8,7 @@ drop if missing(en_atm_co2e_pc)
 drop if missing(eg_use_pcap_kg_oe)
 
 gen y = log(ny_gdp_pcap_kd)
-gen g = log(en_atm_co2e_pc*1000)
+gen g = log(en_atm_co2e_pc*100)
 gen e = log(eg_use_pcap_kg_oe)
 gen y2 = y^2
 gen y3 = y^3
@@ -16,9 +16,9 @@ gen y3 = y^3
 summarize g y y2 y3 e
 
 egen id = group(countrycode)
+egen ilid = group(incomelevel)
 
-
-bysort id: drop if _N<20 // Dump crappy frequencies
+bysort id: drop if _N<30 // Dump crappy frequencies
 
 replace g = g*100 // make me more like the others 
 
@@ -28,6 +28,13 @@ xtset id year
  
 xtsum g y y2 y3 e
 
+sort year incomelevel
+by year incomelevel: egen log_ghg = total(g) 
+by year incomelevel: egen log_ene = total(e) 
+
+
+twoway (scatter g year, msymbol(Oh) msize(.4) mcolor(blue)) (qfit g year, msize(2)), by (incomelevelname)
+. twoway (scatter ny_gdp_pcap_kd year, msymbol(Oh) msize(.2) mcolor(blue)) (qfit ny_gdp_pcap_kd year, lwidth(.8)) if inlist(ilid, 3,4), by (incomelevelname) 
 * check for collinearity between g and e
 collin g e
 
@@ -48,18 +55,20 @@ xtreg g y y2 y3 e, fe
 predict ehat
 xtline ehat if  inlist(countryname, "Denmark","Finland","Norway","Sweden")
 
-
+* estab or asdoc for below results
 quietly areg g y y2 y3 e if inlist(incomelevel, "LMC"), absorb(id)
-estimates store lmc
+estimates store LMC
 quietly areg g y y2 y3 e  if inlist(incomelevel, "UMC"), absorb(id)
-estimates store umc
+estimates store UMC
 quietly areg g y y2 y3 e  if inlist(incomelevel, "HIC"), absorb(id)
-estimates store hic
+estimates store HIC
 quietly areg g y y2 y3 e  if inlist(incomelevel, "LIC"), absorb(id)
-estimates store lic
+estimates store LIC
 quietly areg g y y2 y3 e, absorb(id)  //R2  0.8939
 estimates store ALL
-estimates table hic umc lmc lic ALL ,stats(r2 F)
+asdoc using "~/Desktop/foo.rtf" estimates table HIC UMC LMC LIC ALL ,stats(r2 F)
+
+
 
 collin g y e  if !missing(y)
 vce, corr

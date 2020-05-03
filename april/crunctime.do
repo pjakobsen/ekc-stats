@@ -6,44 +6,55 @@ EG.USE.PCAP.KG.OE   Energy use (kg of oil equivalent per capita)"
 EG.USE.COMM.FO.ZS.  Fossil Fuel Energy Consumption (% of Total)
 EG.FEC.RNEW.ZS.     Renewables"
 SP.POP.TOTL         Population
+EN.ATM.CO2E.PC      CO2 emmissions, to be used as a proxy for ghg?
 
-
+Carbon dioxide emissions are those stemming from the burning of fossil fuels and the manufacture of cement. 
+They include carbon dioxide produced during consumption of solid, liquid, and gas fuels and gas flaring.
 */
 
 //Scandinavian only wbopendata, country(dnk;fin;isl;nor;swe) indicator(EN.ATM.GHGT.KT.CE;NY.GDP.PCAP.PP.KD;EG.USE.PCAP.KG.OE;SP.POP.TOTL) year(1990:2012) clear long
 
 * Get everythin, then take what I need
-wbopendata,  indicator(EN.ATM.GHGT.KT.CE;NY.GDP.PCAP.PP.KD;EG.USE.PCAP.KG.OE;EG.USE.COMM.FO.ZS;EG.FEC.RNEW.ZS;SP.POP.TOTL) year(1990:2012) clear long
+wbopendata,  indicator(EN.ATM.CO2E.PC;EN.ATM.GHGT.KT.CE;NY.GDP.PCAP.PP.KD;EG.USE.PCAP.KG.OE;EG.USE.COMM.FO.ZS;EG.FEC.RNEW.ZS;SP.POP.TOTL) year(1960:2018) clear long
 
-keep if region == "ECS" //Erope * Central Asia
-keep if incomelevel == "HIC" || incomelevel == "UMC"
-drop countrycode region regionname adminregion adminregionname  lendingtype lendingtypename 
+//keep if region == "ECS" //Erope * Central Asia
+//keep if incomelevel == "HIC" || incomelevel == "UMC"
+drop if regionname == "Aggregates"
+//drop countrycode region regionname adminregion adminregionname  lendingtype lendingtypename 
 
-* Dump countries with no Greenhouse Emmission data
-drop if missing(en_atm_ghgt_kt_ce)
 
 
 * Rename, generate and drop variables 
 rename en_atm_ghgt_kt_ce gge, label "Greenhouse" //keep to categorize with dummies
-rename sp_pop_totl Population
-generate gge_pcap = (gge*1000)/Population
+rename sp_pop_totl population
+generate gge_pcap = (gge*100)/population
 label variable gge_pcap "Greenhouse Gas Emmisions Per Capita"
 
 rename ny_gdp_pcap_pp_kd gdp_pcap
 label variable  gdp_pcap "GDP per capita, PPP 2011" 
 
+rename en_atm_co2e_pc co2e_pcap
+label variable  co2e_pcap "CO2 emissions (metric tons per capita)"
+
 rename eg_use_pcap_kg_oe eg_pcap 
 label variable eg_pcap  "Energy use (kg of oil equivalent per capita)"
 
-rename eg_use_comm_fo_zs fossil_fuel_use
-label variable fossil_fuel_use "Fossil Fuel Energy Consumption (% of Total)"
+rename eg_use_comm_fo_zs fossil
+label variable fossil "Fossil Fuel Energy Consumption (% of Total)"
 
-rename eg_fec_rnew_zs Renewables
-label variable Renewables "Renewable energy consumption (% of total final energy consumption)"
+rename eg_fec_rnew_zs renew
+label variable renew "Renewable energy consumption (% of total final energy consumption)"
 
-
+ drop if inrange(year, 1960,1969) | inrange(year, 2013,2018)
+asdoc mdesc gge co2e gdp_pcap eg_pcap fossil renew
 * What do we have left?
-tabulate country
+tabulate countryname
+
+* Summary Stats for ASDOC
+
+bysort incomelevelname: sum gge co2e gdp_pcap fossil renew
+bysort incomelevelname: asdoc sum gge co2e
+bysort incomelevelname: asdoc sum gge co2e, stat(N)
 
 * Correlation tables
 
@@ -63,7 +74,7 @@ generate green = (gge*fossil_fuel_use)/Renewables
 sort countryname year
 
 ******. Prepare Panel Data Estimation ********
-egen id = group(country)
+egen id = group(countryname)
 
 gen gg = log(gdp_pcap)
 gen y = log(gdp_pcap)
